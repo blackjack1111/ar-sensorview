@@ -5,7 +5,7 @@ using UnityEngine;
 public class Tracker : MonoBehaviour
 {
 
-    public List<GameObject> trackUpdateList;
+    public List<TrackUpdate> trackUpdateList;
     public Transform currentTrackUpdateMarker;
 
     public int currentIndex = 0;
@@ -22,10 +22,13 @@ public class Tracker : MonoBehaviour
     }
 
     public void processDetection(Collider detection){
-        GameObject newUpdate = trackUpdateList[currentIndex];
+        TrackUpdate newUpdate = trackUpdateList[currentIndex];
+        newUpdate.trackName = detection.gameObject.name;
+        newUpdate.trackNumber = detection.gameObject.GetInstanceID();
+        newUpdate.timeOfDetection = Time.time;
         newUpdate.transform.position = detection.transform.position;
         currentTrackUpdateMarker.Translate(detection.transform.position - currentTrackUpdateMarker.position,Space.World);
-        newUpdate.SetActive(true);
+        newUpdate.gameObject.SetActive(true);
         currentIndex ++;
         if (currentIndex >= trackUpdateList.Capacity){
             currentIndex = 0;
