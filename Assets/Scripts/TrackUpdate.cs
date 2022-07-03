@@ -9,18 +9,15 @@ public class TrackUpdate : MonoBehaviour, IMixedRealityFocusHandler, IMixedReali
     public string trackName;
     public int trackNumber;
     public float timeOfDetection;
-
     public Transform marker;
-
-
-public GameObject tooltip;
+    public delegate void SelectEvent(int trackNumber, float timeOfDetection, string trackName);
+    public static event SelectEvent OnHover;
 
     Vector3 defaultSize;
     // Start is called before the first frame update
     void Awake()
     {
         defaultSize = marker.localScale;
-        tooltip.SetActive(false);
     }
 
     // Update is called once per frame
@@ -32,15 +29,13 @@ public GameObject tooltip;
     {
         Debug.Log("Enter Focus");
         marker.localScale = defaultSize * 2;
-        tooltip.GetComponent<ToolTip>().ToolTipText = GetTooltipText();
-        tooltip.SetActive(true);
+        OnHover(trackNumber, timeOfDetection, trackName);
     }
 
     public void OnFocusExit(FocusEventData eventData)
     {
         Debug.Log("Exit Focus");
         marker.localScale = defaultSize;
-        tooltip.SetActive(false);
     }
 
     public void OnPointerUp(MixedRealityPointerEventData eventData)
@@ -65,7 +60,4 @@ public GameObject tooltip;
         
     }
 
-    private string GetTooltipText(){
-        return "" + timeOfDetection + "s - " + trackNumber + ": " + trackName;
-    }
 }
